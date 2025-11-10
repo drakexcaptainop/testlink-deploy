@@ -1,16 +1,21 @@
-FROM php:8.2-apache
+FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TESTLINK_VERSION=1.9.20
 
-# Install dependencies and PHP extensions for PostgreSQL + TestLink
+# Install Apache + PHP + extensions
 RUN apt-get update && apt-get install -y \
+    apache2 \
+    php \
+    php-pgsql \
+    php-mbstring \
+    php-xml \
+    php-gd \
+    php-curl \
     wget \
     unzip \
-    libpq-dev \
     ca-certificates \
- && docker-php-ext-install pdo_pgsql pgsql mbstring \
- && rm -rf /var/lib/apt/lists/*
+ && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Download and install TestLink
 RUN mkdir -p /var/www/html/testlink && \
@@ -20,16 +25,15 @@ RUN mkdir -p /var/www/html/testlink && \
     rm /tmp/testlink.tar.gz && \
     chown -R www-data:www-data /var/www/html/testlink
 
-# Point Apache DocumentRoot to TestLink
+# Point Apache to TestLink directory
 RUN sed -i 's#DocumentRoot /var/www/html#DocumentRoot /var/www/html/testlink#g' /etc/apache2/sites-available/000-default.conf
 
-# Our entrypoint wires DB config and starts Apache
+# Copy entrypoint
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-# Render sets $PORT; we'll bind Apache to that in entrypoint.
+# Render will inject $PORT (we'll use it below)
 EXPOSE 8080
 
 WORKDIR /var/www/html/testlink
-
 CMD ["/entrypoint.sh"]
