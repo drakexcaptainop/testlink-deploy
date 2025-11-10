@@ -17,7 +17,7 @@ RUN mkdir -p /var/www/html/testlink && \
     rm /tmp/testlink.tar.gz && \
     chown -R www-data:www-data /var/www/html/testlink
 
-# Overwrite default vhost to point to TestLink and allow access
+# Apache vhost: point to TestLink and allow access
 RUN cat << 'EOF' > /etc/apache2/sites-available/000-default.conf
 <VirtualHost *:80>
     DocumentRoot /var/www/html/testlink
@@ -28,20 +28,18 @@ RUN cat << 'EOF' > /etc/apache2/sites-available/000-default.conf
         Require all granted
     </Directory>
 
-    ErrorLog ${APACHE_LOG_DIR}/error.log
-    CustomLog ${APACHE_LOG_DIR}/access.log combined
+    ErrorLog \${APACHE_LOG_DIR}/error.log
+    CustomLog \${APACHE_LOG_DIR}/access.log combined
 </VirtualHost>
 EOF
 
-# Create log and upload directories for TestLink
+# Create log and upload dirs TestLink expects
 RUN mkdir -p /var/testlink/logs /var/testlink/upload_area && \
     chown -R www-data:www-data /var/testlink && \
     chmod -R 755 /var/testlink
 
-# Entrypoint
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-
+# Hard-code DB config using Railway MySQL credentials
+# ⬇️ REPLACE these placeholders with your actual Railway MYSQL* values
 RUN cat << 'EOF' > /var/www/html/testlink/config_db.inc.php
 <?php
 define('DB_TYPE', 'mysqli');
@@ -53,7 +51,10 @@ define('DB_TABLE_PREFIX', 'tl_');
 ?>
 EOF
 
-EXPOSE 8080
+# Entrypoint to adjust port for Railway and start Apache
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
+EXPOSE 8080
 WORKDIR /var/www/html/testlink
 CMD ["/entrypoint.sh"]
