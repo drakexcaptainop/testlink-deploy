@@ -1,13 +1,11 @@
+
 FROM php:7.4-apache
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TESTLINK_VERSION=1.9.20
 
-# Fix EOL Debian repos for php:7.4 image
-RUN sed -i 's|deb.debian.org|archive.debian.org|g' /etc/apt/sources.list \
- && sed -i 's|security.debian.org|archive.debian.org|g' /etc/apt/sources.list \
- && sed -i '/stretch-updates/d' /etc/apt/sources.list || true \
- && apt-get update \
+# Install deps + MySQL extensions
+RUN apt-get update \
  && apt-get install -y wget unzip ca-certificates \
  && docker-php-ext-install mysqli pdo pdo_mysql mbstring \
  && rm -rf /var/lib/apt/lists/*
