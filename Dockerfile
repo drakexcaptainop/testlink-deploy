@@ -1,7 +1,8 @@
-FROM bitnami/testlink:latest
+FROM lscr.io/linuxserver/testlink:latest
 
-# Optional: make sure the container listens on port 80 for Render
+# Render expects the app to listen on $PORT
+# This image exposes port 80 by default, so just map it
 EXPOSE 80
 
-# Render uses the PORT env var automatically; Bitnami already runs Apache.
-CMD ["/opt/bitnami/scripts/testlink/run.sh"]
+# Ensure Apache runs when Render starts
+CMD ["/init"]
