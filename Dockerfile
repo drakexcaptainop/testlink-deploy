@@ -20,6 +20,12 @@ RUN mkdir -p /var/www/html/testlink && \
 # Set Apache DocumentRoot to TestLink
 RUN sed -i 's#DocumentRoot /var/www/html#DocumentRoot /var/www/html/testlink#g' /etc/apache2/sites-available/000-default.conf
 
+RUN echo '<Directory "/var/www/html/testlink">\n\
+    AllowOverride All\n\
+    Require all granted\n\
+</Directory>' > /etc/apache2/conf-available/testlink.conf \
+ && a2enconf testlink
+
 # Entrypoint
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
