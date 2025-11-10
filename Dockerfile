@@ -55,6 +55,7 @@ EOF
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
+# 
 EXPOSE 8080
 WORKDIR /var/www/html/testlink
 CMD ["/entrypoint.sh"]
