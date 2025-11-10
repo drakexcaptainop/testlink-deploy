@@ -17,20 +17,26 @@ RUN mkdir -p /var/www/html/testlink && \
     rm /tmp/testlink.tar.gz && \
     chown -R www-data:www-data /var/www/html/testlink
 
-# Set Apache DocumentRoot to TestLink
-RUN sed -i 's#DocumentRoot /var/www/html#DocumentRoot /var/www/html/testlink#g' /etc/apache2/sites-available/000-default.conf
+# Overwrite default vhost to point to TestLink and allow access
+RUN cat << 'EOF' > /etc/apache2/sites-available/000-default.conf
+<VirtualHost *:80>
+    DocumentRoot /var/www/html/testlink
 
-RUN echo '<Directory "/var/www/html/testlink">\n\
-    AllowOverride All\n\
-    Require all granted\n\
-</Directory>' > /etc/apache2/conf-available/testlink.conf \
- && a2enconf testlink
+    <Directory /var/www/html/testlink>
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+EOF
 
 # Entrypoint
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-# Railway will route to this port; we bind Apache to $PORT in entrypoint
 EXPOSE 8080
 
 WORKDIR /var/www/html/testlink
