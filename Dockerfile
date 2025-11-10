@@ -18,8 +18,10 @@ RUN mkdir -p /var/www/html/testlink && \
     chown -R www-data:www-data /var/www/html/testlink
 
 # Apache vhost: point to TestLink and allow access
-RUN cat << 'EOF' > /etc/apache2/sites-available/000-default.conf
+# Rebuild Apache vhost configuration cleanly
+RUN printf '%s\n' "\
 <VirtualHost *:80>
+    ServerName localhost
     DocumentRoot /var/www/html/testlink
 
     <Directory /var/www/html/testlink>
@@ -28,10 +30,9 @@ RUN cat << 'EOF' > /etc/apache2/sites-available/000-default.conf
         Require all granted
     </Directory>
 
-    ErrorLog \${APACHE_LOG_DIR}/error.log
-    CustomLog \${APACHE_LOG_DIR}/access.log combined
-</VirtualHost>
-EOF
+    ErrorLog /var/log/apache2/error.log
+    CustomLog /var/log/apache2/access.log combined
+</VirtualHost>" > /etc/apache2/sites-available/000-default.conf
 
 # Create log and upload dirs TestLink expects
 RUN mkdir -p /var/testlink/logs /var/testlink/upload_area && \
