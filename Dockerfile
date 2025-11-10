@@ -42,6 +42,15 @@ RUN mkdir -p /var/testlink/logs /var/testlink/upload_area && \
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
+RUN echo "<?php
+define('DB_TYPE', 'mysqli');
+define('DB_USER', 'railway');
+define('DB_PASS', 'AbCdEfGh123');
+define('DB_HOST', 'mysql.railway.internal');
+define('DB_NAME', 'railway');
+define('DB_TABLE_PREFIX', 'tl_');
+?>" > /var/www/html/testlink/config_db.inc.php
+
 EXPOSE 8080
 
 WORKDIR /var/www/html/testlink
