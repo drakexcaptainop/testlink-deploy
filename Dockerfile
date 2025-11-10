@@ -33,6 +33,11 @@ RUN cat << 'EOF' > /etc/apache2/sites-available/000-default.conf
 </VirtualHost>
 EOF
 
+# Create log and upload directories for TestLink
+RUN mkdir -p /var/testlink/logs /var/testlink/upload_area && \
+    chown -R www-data:www-data /var/testlink && \
+    chmod -R 755 /var/testlink
+
 # Entrypoint
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
