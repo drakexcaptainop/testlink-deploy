@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 
 APP_DIR="/var/www/html/testlink"
@@ -25,11 +25,13 @@ EOF
   chown www-data:www-data "$CONFIG_FILE"
 fi
 
-# Use Render's dynamic port (default to 8080)
+# Use Render's dynamic port (default 8080 if not set)
 PORT="${PORT:-8080}"
 echo "Using PORT=${PORT}"
+
+# Update Apache to listen on $PORT
 sed -i "s/Listen 80/Listen ${PORT}/" /etc/apache2/ports.conf
 sed -i "s/:80>/:${PORT}>/" /etc/apache2/sites-available/000-default.conf
 
 echo "Starting Apache..."
-exec apachectl -D FOREGROUND
+exec apache2-foreground
