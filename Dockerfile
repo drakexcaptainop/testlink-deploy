@@ -18,17 +18,23 @@ RUN mkdir -p /var/www/html/testlink && \
     chown -R www-data:www-data /var/www/html/testlink
 
 # ---- Apache VirtualHost ----
-RUN echo "<VirtualHost *:80>
-    ServerName localhost
+# ---- Apache VirtualHost (clean, no escapes) ----
+RUN printf "%s\n" "\
+ServerName localhost
+
+<VirtualHost *:80>
     DocumentRoot /var/www/html/testlink
+
     <Directory /var/www/html/testlink>
         Options Indexes FollowSymLinks
         AllowOverride All
         Require all granted
     </Directory>
+
     ErrorLog /var/log/apache2/error.log
     CustomLog /var/log/apache2/access.log combined
-</VirtualHost>" > /etc/apache2/sites-available/000-default.conf
+</VirtualHost>
+" > /etc/apache2/sites-available/000-default.conf
 
 # ---- Create TestLink-required folders ----
 RUN mkdir -p /var/testlink/logs /var/testlink/upload_area && \
