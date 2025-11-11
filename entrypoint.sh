@@ -12,17 +12,7 @@ CONFIG_FILE="${APP_DIR}/config_db.inc.php"
 
 DB_TYPE="${TESTLINK_DATABASE_TYPE:-mysqli}"
 
-echo "Writing $CONFIG_FILE from env..."
-cat > "$CONFIG_FILE" <<EOF
-<?php
-define('DB_TYPE', '${DB_TYPE}');
-define('DB_USER', '${TESTLINK_DATABASE_USER}');
-define('DB_PASS', '${TESTLINK_DATABASE_PASSWORD}');
-define('DB_HOST', '${TESTLINK_DATABASE_HOST}');
-define('DB_NAME', '${TESTLINK_DATABASE_NAME}');
-define('DB_TABLE_PREFIX', 'tl_');
-?>
-EOF
+
 chown www-data:www-data "$CONFIG_FILE"
 
 PORT="${PORT:-8080}"
