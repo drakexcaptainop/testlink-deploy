@@ -18,10 +18,8 @@ RUN mkdir -p /var/www/html/testlink && \
     chown -R www-data:www-data /var/www/html/testlink
 
 # Apache vhost: point to TestLink and allow access
-# Rebuild Apache vhost configuration cleanly
-RUN printf '%s\n' "\
+RUN cat << 'EOF' > /etc/apache2/sites-available/000-default.conf
 <VirtualHost *:80>
-    ServerName localhost
     DocumentRoot /var/www/html/testlink
 
     <Directory /var/www/html/testlink>
@@ -30,9 +28,10 @@ RUN printf '%s\n' "\
         Require all granted
     </Directory>
 
-    ErrorLog /var/log/apache2/error.log
-    CustomLog /var/log/apache2/access.log combined
-</VirtualHost>" > /etc/apache2/sites-available/000-default.conf
+    ErrorLog \${APACHE_LOG_DIR}/error.log
+    CustomLog \${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+EOF
 
 # Create log and upload dirs TestLink expects
 RUN mkdir -p /var/testlink/logs /var/testlink/upload_area && \
@@ -44,10 +43,10 @@ RUN mkdir -p /var/testlink/logs /var/testlink/upload_area && \
 RUN cat << 'EOF' > /var/www/html/testlink/config_db.inc.php
 <?php
 define('DB_TYPE', 'mysqli');
-define('DB_USER', 'railway');             // <-- put MYSQLUSER here
-define('DB_PASS', 'aBcDeFgHiJK12345');    // <-- put MYSQLPASSWORD here
+define('DB_USER', 'railway');             
+define('DB_PASS', 'tXqYITFAqPbKvXHELnLhqmJMxFVTXVdF');    
 define('DB_HOST', 'mysql.railway.internal');
-define('DB_NAME', 'railway');             // <-- put MYSQLDATABASE here
+define('DB_NAME', 'railway');             
 define('DB_TABLE_PREFIX', 'tl_');
 ?>
 EOF
