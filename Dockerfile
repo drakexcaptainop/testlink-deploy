@@ -49,7 +49,7 @@ RUN printf '%s\n' \
 '<?php' \
 "define('DB_TYPE', 'mysqli');" \
 "define('DB_USER', 'railway');" \        
-"define('DB_PASS', 'aBcDeFgHiJK12345');" \  
+"define('DB_PASS', 'tXqYITFAqPbKvXHELnLhqmJMxFVTXVdF');" \  
 "define('DB_HOST', 'mysql.railway.internal');" \
 "define('DB_NAME', 'railway');" \       
 "define('DB_TABLE_PREFIX', 'tl_');" \
