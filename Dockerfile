@@ -48,10 +48,10 @@ RUN mkdir -p /var/testlink/logs /var/testlink/upload_area && \
 RUN printf '%s\n' \
 '<?php' \
 "define('DB_TYPE', 'mysqli');" \
-"define('DB_USER', 'railway');" \        # <<< change to your MYSQLUSER
-"define('DB_PASS', 'aBcDeFgHiJK12345');" \  # <<< change to your MYSQLPASSWORD
+"define('DB_USER', 'railway');" \        
+"define('DB_PASS', 'aBcDeFgHiJK12345');" \  
 "define('DB_HOST', 'mysql.railway.internal');" \
-"define('DB_NAME', 'railway');" \        # <<< change to your MYSQLDATABASE
+"define('DB_NAME', 'railway');" \       
 "define('DB_TABLE_PREFIX', 'tl_');" \
 '?>' \
 > /var/www/html/testlink/config_db.inc.php
